@@ -1634,8 +1634,9 @@
             document.getElementById('countdownBig').textContent = formatted;
             if (remaining <= 0) clearInterval(timerInterval);
         }
-        updateCountdown();
-        const timerInterval = setInterval(updateCountdown, 1000);
+let timerInterval;
+updateCountdown();
+timerInterval = setInterval(updateCountdown, 1000);
 
         // ===== SCROLL REVEAL =====
         const reveals = document.querySelectorAll('.reveal');
