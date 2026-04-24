@@ -1606,17 +1606,22 @@
 
     <script>
         // ===== COUNTDOWN =====
-        const DURATION_HOURS = 3;
-        const storageKey = 'pct_deadline_v2';
+const duration = 60 * 30; // 30 minutos
+let timer = duration;
 
-        function getDeadline() {
-            let deadline = localStorage.getItem(storageKey);
-            if (!deadline) {
-                deadline = Date.now() + DURATION_HOURS * 60 * 60 * 1000;
-                localStorage.setItem(storageKey, deadline);
-            }
-            return parseInt(deadline);
-        }
+function updateCountdown() {
+  let minutes = Math.floor(timer / 60);
+  let seconds = timer % 60;
+
+  document.getElementById("timer").innerText =
+    `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+  if (--timer < 0) {
+    timer = 0;
+  }
+}
+
+setInterval(updateCountdown, 1000);
 
         function formatTime(ms) {
             let total = Math.max(0, Math.floor(ms / 1000));
