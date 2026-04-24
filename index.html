@@ -1606,43 +1606,48 @@
 
     <script>
         // ===== COUNTDOWN =====
-const duration = 60 * 30; // 30 minutos
-let timer = duration;
+<script>
+  const DURATION_HOURS = 3;
+  const storageKey = "pct_deadline_v2";
 
-function updateCountdown() {
-  let minutes = Math.floor(timer / 60);
-  let seconds = timer % 60;
+  function getDeadline() {
+    let deadline = localStorage.getItem(storageKey);
 
-  document.getElementById("timer").innerText =
-    `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    if (!deadline || Number(deadline) < Date.now()) {
+      deadline = Date.now() + DURATION_HOURS * 60 * 60 * 1000;
+      localStorage.setItem(storageKey, deadline);
+    }
 
-  if (--timer < 0) {
-    timer = 0;
+    return Number(deadline);
   }
-}
 
-setInterval(updateCountdown, 1000);
+  function formatTime(ms) {
+    let total = Math.max(0, Math.floor(ms / 1000));
+    let h = Math.floor(total / 3600).toString().padStart(2, "0");
+    let m = Math.floor((total % 3600) / 60).toString().padStart(2, "0");
+    let s = (total % 60).toString().padStart(2, "0");
 
-        function formatTime(ms) {
-            let total = Math.max(0, Math.floor(ms / 1000));
-            const h = Math.floor(total / 3600).toString().padStart(2, '0');
-            const m = Math.floor((total % 3600) / 60).toString().padStart(2, '0');
-            const s = (total % 60).toString().padStart(2, '0');
-            return `${h}:${m}:${s}`;
-        }
+    return `${h}:${m}:${s}`;
+  }
 
-        const deadline = getDeadline();
-        function updateCountdown() {
-            const remaining = deadline - Date.now();
-            const formatted = formatTime(remaining);
-            document.getElementById('timer').textContent = formatted;
-            document.getElementById('countdownBig').textContent = formatted;
-            if (remaining <= 0) clearInterval(timerInterval);
-        }
-let timerInterval;
-updateCountdown();
-timerInterval = setInterval(updateCountdown, 1000);
+  let deadline = getDeadline();
 
+  function updateCountdown() {
+    let remaining = deadline - Date.now();
+
+    if (remaining <= 0) {
+      deadline = Date.now() + DURATION_HOURS * 60 * 60 * 1000;
+      localStorage.setItem(storageKey, deadline);
+      remaining = deadline - Date.now();
+    }
+
+    document.getElementById("timer").textContent = formatTime(remaining);
+    document.getElementById("countdownBig").textContent = formatTime(remaining);
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+</script>
         // ===== SCROLL REVEAL =====
         const reveals = document.querySelectorAll('.reveal');
         const observer = new IntersectionObserver((entries) => {
